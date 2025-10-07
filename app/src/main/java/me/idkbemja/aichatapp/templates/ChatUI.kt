@@ -27,6 +27,9 @@ import kotlinx.coroutines.launch
 import me.idkbemja.aichatapp.utils.AuthHandler
 import me.idkbemja.aichatapp.utils.TokenManager
 import me.idkbemja.aichatapp.utils.IAChatHandler
+import me.idkbemja.aichatapp.utils.formatChatText
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -97,23 +100,41 @@ fun ChatScreen(onLogout: (() -> Unit)? = null) {
         ) {
             item { Spacer(modifier = Modifier.height(8.dp)) }
             items(messages) { msg ->
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 8.dp, vertical = 4.dp),
-                    horizontalArrangement = if (msg.isUser) Arrangement.End else Arrangement.Start
-                ) {
-                    Box(
+                if (msg.isUser) {
+                    // Mensaje del usuario: burbuja alineada a la derecha
+                    Row(
                         modifier = Modifier
-                            .clip(RoundedCornerShape(16.dp))
-                            .background(if (msg.isUser) Color(0xFFB0AAAA) else Color(0xFF3A3737))
-                            .padding(12.dp)
-                            .widthIn(max = 300.dp)
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp, vertical = 4.dp),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(16.dp))
+                                .background(Color(0xFFB0AAAA))
+                                .padding(12.dp)
+                                .widthIn(max = 300.dp)
+                        ) {
+                            Text(
+                                text = msg.text,
+                                color = Color.White,
+                                fontSize = 15.sp
+                            )
+                        }
+                    }
+                } else {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 8.dp, vertical = 4.dp)
                     ) {
                         Text(
-                            text = msg.text,
+                            text = formatChatText(msg.text),
                             color = Color.White,
-                            fontSize = 15.sp
+                            fontSize = 15.sp,
+                            modifier = Modifier
+                                .background(Color.Transparent)
+                                .padding(0.dp)
                         )
                     }
                 }
